@@ -8,12 +8,29 @@ const refs = {
 };
 
 refs.input.addEventListener('input', debounce(() => {
-    
+    let countryName = refs.input.value.trim().toLowerCase();
+    console.log(countryName);
+    fetchCountries(countryName).then(
+        response => {
+            let countriesList = response.json();
+            console.log(countriesList);
+            return countriesList;
+        }
+    ).then(
+        response => {
+            return response.map(elem=>elem.name.common.toLowerCase())
+        }
+    ).then(
+        response => {
+            console.log(response);
+        })
 }, DEBOUNCE_DELAY));
 
 
 function fetchCountries(name) {
-
+    const country = fetch('https://restcountries.com/v3.1/all');
+console.log(country, name);
+return country;
 //     https://restcountries.com/v2/{service}?fields={field},{field},{field}
 //     https://restcountries.com/v3.1/name/{name}
 //     name.official - полное имя страны
@@ -33,4 +50,4 @@ function errorName() {
 
 toManyMatches();
 errorName();
-// Notiflix.Notify.info('Cogito ergo sum');
+fetchCountries(2).then(data => console.log(data.json()));
