@@ -18,3 +18,18 @@ body {
   max-width: 320px;
   margin-bottom: 16px;
 }
+
+.country-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.counrty-item {
+  font-size: 60px;
+}
+
+.flag-svg {
+  background-repeat: no-repeat;
+  background-size: contain;
+  margin-right: 20px;
+}

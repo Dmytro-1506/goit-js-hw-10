@@ -9,10 +9,8 @@ const refs = {
     countryInfo: document.querySelector('.country-info'),
 };
 
-function createCountryItem(country) {
-    refs.countryList.innerHTML = `<svg class="flag-svg" width="70" height="70"><use href="${country.flags.svg}"></use></svg><span class="country-name">${country.name}</span>`;
-    console.log(country.flags.svg);
-    console.log(country.name);
+function createCountryItem(country, arrey) {
+    arrey.push(`<div class="counrty-item"><img class="flag-svg" src="${country.flags.svg}" width="100" height="50"></img><span class="country-name">${country.name}</span></div>`);
 }
 
 refs.input.addEventListener('input', debounce(() => {
@@ -36,18 +34,11 @@ function getAllCountries(countryName) {
             });
             const newNamesList = countriesQuantityCheck(checkedCountryNames);
             const countriesToShow = getCountriesByNames(response, newNamesList);
+            let stringToHtml = [];
             countriesToShow.forEach(country => {
-                createCountryItem(country);
+                createCountryItem(country, stringToHtml);
             });
-        }
-    ).then(
-        response => {
-            
-        }
-    ).then(
-        response => {
-            let countriesList = [];
-            console.log(response);
+            refs.countryInfo.innerHTML = stringToHtml.toString();
         }
     ).catch(err => {
             console.log(err);
@@ -78,15 +69,6 @@ function countriesQuantityCheck(arrey) {
 
 function fetchCountries(name) {
     return fetch(`https://restcountries.com/v2/all?fields=name,capital,population,flags,languages`);
-    console.log(AllCountries);
-
-//     https://restcountries.com/v2/{service}?fields={field},{field},{field}
-//     https://restcountries.com/v3.1/name/{name}
-//     name.official - полное имя страны
-    // capital - столица
-    // population - население
-    // flags.svg - ссылка на изображение флага
-    // languages - массив языков
 }
 
 function toManyMatches() {
