@@ -14,7 +14,6 @@ export default function fetchCountries(countryName) {
         }
     ).then(
         response => {
-            console.log(response);
             let checkedCountryNames = [];
             const namesList = response.map(elem => elem.name.toLowerCase());
             namesList.map(elem => {
@@ -22,7 +21,6 @@ export default function fetchCountries(countryName) {
             });
             const newNamesList = countriesQuantityCheck(checkedCountryNames);
             const countriesToShow = getCountriesByNames(response, newNamesList);
-            console.log(countriesToShow);
             if (countriesToShow.length > 1) {
             let stringToHtml = [];
             countriesToShow.forEach(country => {
