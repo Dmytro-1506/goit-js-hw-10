@@ -28,8 +28,22 @@ body {
   font-size: 60px;
 }
 
-.flag-svg {
+.flag-svg,
+.one-flag {
   background-repeat: no-repeat;
   background-size: contain;
   margin-right: 20px;
+}
+
+.one-country {
+  display: flex;
+  flex-direction: column;
+}
+
+.country-name {
+  font-size: 80px;
+}
+
+.item-info {
+  font-size: 40px;
 }
