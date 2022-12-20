@@ -9,13 +9,10 @@ const refs = {
     countryInfo: document.querySelector('.country-info'),
 };
 
-function createCountryList(object) {
-    let countriesArr = [];
-    Object.values(object).map(elem => {
-        const { name, flags } = elem;
-        countriesArr.push(`<svg class="flag-svg" width="70" height="70"><use href="${flags.svg}"></use></svg><span class="country-name">${name.official}</span>`)
-    });
-    refs.countryList.innerHTML = countriesArr.toString();
+function createCountryItem(country) {
+    refs.countryList.innerHTML = `<svg class="flag-svg" width="70" height="70"><use href="${country.flags.svg}"></use></svg><span class="country-name">${country.name}</span>`;
+    console.log(country.flags.svg);
+    console.log(country.name);
 }
 
 refs.input.addEventListener('input', debounce(() => {
@@ -31,22 +28,21 @@ function getAllCountries(countryName) {
         }
     ).then(
         response => {
-            return response.map(elem => elem.name.toLowerCase());
+            console.log(response);
+            let checkedCountryNames = [];
+            const namesList = response.map(elem => elem.name.toLowerCase());
+            namesList.map(elem => {
+                countryNameCheck(elem, countryName, checkedCountryNames);
+            });
+            const newNamesList = countriesQuantityCheck(checkedCountryNames);
+            const countriesToShow = getCountriesByNames(response, newNamesList);
+            countriesToShow.forEach(country => {
+                createCountryItem(country);
+            });
         }
     ).then(
         response => {
-            let checkedCountryNames = [];
-            response.map(elem => {
-                countryNameCheck(elem, countryName, checkedCountryNames);
-            });
-            let countriesQuantity = checkedCountryNames.length;
-            if (countriesQuantity > 10) {
-                toManyMatches();
-            } else if (countriesQuantity === 0) {
-                errorName();
-            } else {
-                return checkedCountryNames;
-            }
+            
         }
     ).then(
         response => {
@@ -56,6 +52,28 @@ function getAllCountries(countryName) {
     ).catch(err => {
             console.log(err);
         })
+}
+
+function getCountriesByNames(allCountries, newNamesList) {
+    let newCountriesList = [];
+    newNamesList.map(name => {
+        allCountries.forEach(object => {
+            if (object.name.toLowerCase().includes(name)) {
+                newCountriesList.push(object);
+            }
+        })
+    })
+    return newCountriesList;
+}
+
+function countriesQuantityCheck(arrey) {
+    if (arrey.length > 10) {
+        toManyMatches();
+    } else if (arrey.length === 0) {
+        errorName();
+    } else {
+        return arrey;
+    }
 }
 
 function fetchCountries(name) {
