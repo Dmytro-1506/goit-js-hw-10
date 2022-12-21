@@ -10,6 +10,8 @@ const refs = {
 };
 
 refs.input.addEventListener('input', debounce(() => {
-    let countryName = refs.input.value.trim().toLowerCase();
-    fetchCountries(countryName);
+    let countryName = refs.input.value.toLowerCase().trim();
+    if (countryName) {
+        fetchCountries(countryName);
+    }
 }, DEBOUNCE_DELAY));
