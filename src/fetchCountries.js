@@ -7,20 +7,17 @@ const refs = {
 };
 
 export default function fetchCountries(countryName) {
-    const allCountries = fetch('https://restcountries.com/v2/all?fields=name,capital,population,flags,languages');
+    const allCountries = fetch(`https://restcountries.com/v3.1/name/${countryName}?fields=name,capital,population,flags,languages`);
     allCountries.then(
         response => {
             return response.json();
         }
     ).then(
         response => {
-            let checkedCountryNames = [];
-            const namesList = response.map(elem => elem.name.toLowerCase());
-            namesList.map(elem => {
-                countryNameCheck(elem, countryName, checkedCountryNames);
-            });
-            const newNamesList = countriesQuantityCheck(checkedCountryNames);
-            const countriesToShow = getCountriesByNames(response, newNamesList);
+            const countriesToShow = countriesQuantityCheck(response);
+            if (response.message === 'Not Found') {
+                return errorName();
+            }
             if (countriesToShow.length > 1) {
             let stringToHtml = [];
             countriesToShow.forEach(country => {
@@ -33,40 +30,25 @@ export default function fetchCountries(countryName) {
             
         }
     ).catch(err => {
-            console.log(err);
-        })
+        console.log(err);
+    })
 }
 
 function createOneCountry(country) {
-    let leng = country.languages;
-    let arrLeng = [];
-    leng.map(elem => {
-        arrLeng.push(elem.name);
-    });
-    return `<div class="one-counrty"><img class="one-flag" src="${country.flags.svg}" width="160" height="80"></img><span class="country-name">${country.name}</span><p class="item-info">Capital: ${country.capital}</p><p class="item-info">Population: ${country.population}</p><p class="item-info">Languages: ${arrLeng.join(', ')}</p></div>`
+    let lenguages = country.languages;
+    let names = country.name;
+    let arrLeng = Object.values(lenguages);
+    return `<div class="one-counrty"><img class="one-flag" src="${country.flags.svg}" width="160" height="80"></img><span class="country-name">${names.official}</span><p class="item-info">Capital: ${country.capital}</p><p class="item-info">Population: ${country.population}</p><p class="item-info">Languages: ${arrLeng.join(', ')}</p></div>`
 }
 
 function createCountryItem(country, arrey) {
-    arrey.push(`<div class="counrty-item"><img class="flag-svg" src="${country.flags.svg}" width="100" height="50"></img><span class="country-name">${country.name}</span></div>`);
-}
-
-function getCountriesByNames(allCountries, newNamesList) {
-    let newCountriesList = [];
-    newNamesList.map(name => {
-        allCountries.forEach(object => {
-            if (object.name.toLowerCase().includes(name)) {
-                newCountriesList.push(object);
-            }
-        })
-    })
-    return newCountriesList;
+    let names = country.name;
+    arrey.push(`<div class="counrty-item"><img class="flag-svg" src="${country.flags.svg}" width="100" height="50"></img><span class="country-name">${names.official}</span></div>`);
 }
 
 function countriesQuantityCheck(arrey) {
     if (arrey.length > 10) {
-        toManyMatches();
-    } else if (arrey.length === 0) {
-        errorName();
+        return toManyMatches();
     } else {
         return arrey;
     }
@@ -78,11 +60,4 @@ function toManyMatches() {
 
 function errorName() {
     Notiflix.Notify.failure("Oops, there is no country with that name");
-}
-
-function countryNameCheck(country, name, newArr) {
-    const chechedName = country.includes(name);
-    if (chechedName) {
-        newArr.push(country);
-    }
 }

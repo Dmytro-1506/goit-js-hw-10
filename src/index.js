@@ -10,6 +10,7 @@ const refs = {
 };
 
 refs.input.addEventListener('input', debounce(() => {
+    refs.countryInfo.innerHTML = '';
     let countryName = refs.input.value.toLowerCase().trim();
     if (countryName) {
         fetchCountries(countryName);
